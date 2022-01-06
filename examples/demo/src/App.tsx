@@ -86,7 +86,7 @@ function ErrorOverlayCodeView(
   });
 
   return (
-    <div ref={ref} class="overflow-x-scroll text-xs font-mono text-gray-50" />
+    <div ref={ref} class="overflow-auto" />
   );
 }
 
@@ -326,7 +326,7 @@ const CustomErrorOverlayComponents: ErrorOverlayComponents = {
             <span class="text-lg font-semibold">{props.functionName}</span>
           </span>
         </Show>
-        <div class="rounded-lg overflow-hidden bg-gray-900 divide-y divide-gray-50">
+        <div class="rounded-lg bg-gray-900 divide-y divide-gray-50">
           {
             props.fileName && (
               <a href={props.fileName} class="m-1 text-gray-50 text-sm font-mono">

@@ -25,7 +25,6 @@ pnpm add solid-error-overlay
 - Error Pagination - Capture multiple errors
 - Global Errors - Capture unhandled global errors
 - No Interruption - Display the overlay without interrupting the current page (only works for errors not originating from the component.)
-- VS Code support - Open source code of stack traces in VS Code
 
 ## Usage
 
