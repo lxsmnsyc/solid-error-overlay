@@ -1,5 +1,13 @@
 # solid-error-overlay
 
+<p align="center">
+  <img
+    src="https://github.com/LXSMNSYC/solid-error-overlay/blob/main/images/preview.png?raw=true"
+    alt="Example"
+    style="width: 80%; height: auto;"
+  />
+</p>
+
 > Unstyled, headless Error Overlay for SolidJS
 
 [![NPM](https://img.shields.io/npm/v/solid-error-overlay.svg)](https://www.npmjs.com/package/solid-error-overlay) [![JavaScript Style Guide](https://badgen.net/badge/code%20style/airbnb/ff5a5f?icon=airbnb)](https://github.com/airbnb/javascript)[![Open in CodeSandbox](https://img.shields.io/badge/Open%20in-CodeSandbox-blue?style=flat-square&logo=codesandbox)](https://codesandbox.io/s/github/LXSMNSYC/solid-error-overlay/tree/main/examples/demo)
