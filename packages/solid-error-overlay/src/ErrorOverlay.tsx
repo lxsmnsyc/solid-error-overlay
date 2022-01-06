@@ -81,26 +81,6 @@ export interface ErrorOverlayOriginalStackFrameProps {
   functionName?: string;
 }
 
-{/* <ErrorOverlayContainer>
-  <ErrorOverlayNavbar>
-    <ErrorOverlayPagination>
-      <ErrorOverlayPrevButton />
-      <ErrorOverlayNextButton />
-      <ErrorOverlayPageCounter />
-    </ErrorOverlayPagination>
-    <ErrorOverlayControls>
-      <ErrorOverlayToggleCompiledButton />
-      <ErrorOverlayResetButton />
-    </ErrorOverlayControls
-  </ErrorOverlayNavbar>
-  <ErrorOverlayContent>
-    <ErrorOverlayErrorInfo />
-    <ErrorOverlayStackFrames>
-      <ErrorOverlayStackFrame />
-    </ErrorOverlayStackFrames>
-  </ErrorOverlayContent>
-</ErrorOverlayContainer> */}
-
 type Component<P> = (props: P) => JSX.Element;
 
 export interface ErrorOverlayComponents {
@@ -271,7 +251,7 @@ function ErrorOverlayInternal(props: ErrorOverlayInternalProps): JSX.Element {
                       )}
                     </For>
                   </Dynamic>
-                ))
+                ));
               }
               return undefined;
             }}

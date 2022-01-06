@@ -66,19 +66,19 @@
     "source-map-js": "^1.0.1"
   },
   "private": false,
-  "description": "",
+  "description": "Unstyled, headless Error Overlay for SolidJS",
   "repository": {
-    "url": "",
+    "url": "https://github.com/lxsmnsyc/solid-error-overlay.git",
     "type": "git"
   },
-  "homepage": "",
+  "homepage": "https://github.com/lxsmnsyc/solid-error-overlay/tree/main/packages/solid-error-overlay",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/lxsmnsyc/solid-error-overlay/issues"
   },
-  "author": "",
   "publishConfig": {
     "access": "public"
   },
+  "author": "Alexis Munsayac",
   "scripts": {
     "prepublishOnly": "pridepack clean && pridepack build",
     "build": "pridepack build",
