@@ -39,7 +39,7 @@ pnpm add solid-error-overlay
 ### Simplest usage
 
 ```js
-import { ErrorOeverlay } from 'solid-error-overlay';
+import { ErrorOverlay } from 'solid-error-overlay';
 
 <ErrorOverlay onError={(error) => handleError(error)}>
   <App />
@@ -88,7 +88,7 @@ Each of the components can be overriden through `<ErrorOverlay>`'s props:
 </ErrorOverlay>
 ```
 
-See the [demo](https://github/LXSMNSYC/solid-error-overlay/tree/main/examples/demo) for expanded use.
+See the [demo](https://github.com/LXSMNSYC/solid-error-overlay/tree/main/examples/demo) for expanded use.
 
 ## License
 
