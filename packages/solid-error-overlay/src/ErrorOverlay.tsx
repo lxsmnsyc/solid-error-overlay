@@ -14,11 +14,14 @@ import {
 import {
   Dynamic,
 } from 'solid-js/web';
-import ErrorStackParser, { StackFrame } from 'error-stack-parser';
+import ErrorStackParser from 'error-stack-parser';
 import {
   omitProps,
 } from 'solid-use';
 import getSourceMap from './get-source-map';
+
+type Unbox<T> = T extends Array<infer U> ? U : never;
+type StackFrame = Unbox<ReturnType<typeof ErrorStackParser.parse>>;
 
 export interface ErrorOverlayContainerProps {
   children: JSX.Element;
@@ -157,7 +160,7 @@ function StackFrame(props: StackFrameProps): JSX.Element {
         isConstructor={props.instance.isConstructor}
         isEval={props.instance.isEval}
         isNative={props.instance.isNative}
-        isTopLevel={props.instance.isTopLevel}
+        isTopLevel={props.instance.isToplevel}
         fileName={result?.source ?? props.instance.fileName}
         functionName={result?.name ?? props.instance.functionName}
         columnNumber={result?.column ?? props.instance.columnNumber}
