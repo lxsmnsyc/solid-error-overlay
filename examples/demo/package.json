@@ -1,6 +1,6 @@
 {
   "name": "demo",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -19,7 +19,7 @@
   "dependencies": {
     "shiki": "^0.10.1",
     "shiki-twoslash": "^3.0.2",
-    "solid-error-overlay": "0.1.0",
+    "solid-error-overlay": "0.1.1",
     "solid-js": "^1.4.3",
     "tailwindcss": "^3.0.24"
   },
