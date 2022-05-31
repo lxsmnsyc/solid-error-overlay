@@ -10,6 +10,7 @@ module.exports = {
   "rules": {
     "react/jsx-no-bind": "off",
     "react/destructuring-assignment": "off",
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-props-no-spreading": "off",
+    "react/no-unstable-nested-components": "off"
   }
 };

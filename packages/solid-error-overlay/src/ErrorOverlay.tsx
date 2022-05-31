@@ -14,7 +14,7 @@ import {
 import {
   Dynamic,
 } from 'solid-js/web';
-import ErrorStackParser from 'error-stack-parser';
+import * as ErrorStackParser from 'error-stack-parser';
 import {
   omitProps,
 } from 'solid-use';
