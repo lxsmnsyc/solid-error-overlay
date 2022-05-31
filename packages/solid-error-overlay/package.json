@@ -1,6 +1,6 @@
 {
   "name": "solid-error-overlay",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "types": "dist/types/index.d.ts",
   "main": "dist/cjs/production/index.jsx",
   "module": "dist/esm/production/index.jsx",
