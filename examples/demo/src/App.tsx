@@ -210,7 +210,7 @@ const CustomErrorOverlayComponents: ErrorOverlayComponents = {
     return (
       <span class="text-lg font-mono font-semibold">
         <span>{props.currentCount}</span>
-        /
+        {' of '}
         <span>{props.maxCount}</span>
       </span>
     );
@@ -264,11 +264,9 @@ const CustomErrorOverlayComponents: ErrorOverlayComponents = {
   },
   ErrorOverlayStackFrames(props) {
     return (
-      <>
-        <div class="flex flex-col">
-          {props.children}
-        </div>
-      </>
+      <div class="flex flex-col">
+        {props.children}
+      </div>
     );
   },
   ErrorOverlayOriginalStackFrame(props) {

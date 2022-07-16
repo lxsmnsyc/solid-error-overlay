@@ -1,5 +1,6 @@
 import {
   batch,
+  createComponent,
   createEffect,
   createMemo,
   createResource,
@@ -7,18 +8,17 @@ import {
   ErrorBoundary,
   For,
   JSX,
+  mergeProps,
   onCleanup,
   onError,
   Show,
 } from 'solid-js';
-import {
-  Dynamic,
-} from 'solid-js/web';
 import * as ErrorStackParser from 'error-stack-parser';
 import {
   omitProps,
 } from 'solid-use';
 import getSourceMap from './get-source-map';
+import createDynamic from './create-dynamic';
 
 type Unbox<T> = T extends Array<infer U> ? U : never;
 type StackFrame = Unbox<ReturnType<typeof ErrorStackParser.parse>>;
@@ -150,23 +150,41 @@ function StackFrame(props: StackFrameProps): JSX.Element {
 
   return createMemo(() => {
     const result = data();
-    return (
-      <Dynamic
-        component={(
-          (!result || props.isCompiled)
-            ? props.ErrorOverlayCompiledStackFrame
-            : props.ErrorOverlayOriginalStackFrame
-        )}
-        isConstructor={props.instance.isConstructor}
-        isEval={props.instance.isEval}
-        isNative={props.instance.isNative}
-        isTopLevel={props.instance.isToplevel}
-        fileName={result?.source ?? props.instance.fileName}
-        functionName={result?.name ?? props.instance.functionName}
-        columnNumber={result?.column ?? props.instance.columnNumber}
-        lineNumber={result?.line ?? props.instance.lineNumber}
-        content={result?.content}
-      />
+    return createDynamic(
+      () => (
+        (!result || props.isCompiled)
+          ? props.ErrorOverlayCompiledStackFrame
+          : props.ErrorOverlayOriginalStackFrame
+      ),
+      {
+        get isConstructor() {
+          return props.instance.isConstructor;
+        },
+        get isEval() {
+          return props.instance.isEval;
+        },
+        get isNative() {
+          return props.instance.isNative;
+        },
+        get isTopLevel() {
+          return props.instance.isToplevel;
+        },
+        get fileName() {
+          return result?.source ?? props.instance.fileName;
+        },
+        get functionName() {
+          return result?.name ?? props.instance.functionName;
+        },
+        get columnNumber() {
+          return result?.column ?? props.instance.columnNumber;
+        },
+        get lineNumber() {
+          return result?.line ?? props.instance.lineNumber;
+        },
+        get content() {
+          return result?.content;
+        },
+      },
     );
   });
 }
@@ -179,18 +197,27 @@ interface ErrorOverlayInternalProps extends ErrorOverlayComponents {
 function ErrorOverlayInternal(props: ErrorOverlayInternalProps): JSX.Element {
   const [currentPage, setCurrentPage] = createSignal(1);
   const [viewCompiled, setViewCompiled] = createSignal(false);
+  const length = createMemo(() => props.errors.length);
+
+  createEffect((currentLength: number) => {
+    const newLength = length();
+    if (currentLength < newLength) {
+      setCurrentPage((current) => current + 1);
+    }
+    return newLength;
+  }, length());
 
   function goPrev() {
     setCurrentPage((c) => {
       if (c > 1) {
         return c - 1;
       }
-      return props.errors.length;
+      return length();
     });
   }
   function goNext() {
     setCurrentPage((c) => {
-      if (c < props.errors.length) {
+      if (c < length()) {
         return c + 1;
       }
       return 1;
@@ -200,69 +227,97 @@ function ErrorOverlayInternal(props: ErrorOverlayInternalProps): JSX.Element {
     setViewCompiled((c) => !c);
   }
 
-  return (
-    <Dynamic component={props.ErrorOverlayContainer}>
-      <Dynamic component={props.ErrorOverlayNavbar}>
-        <Dynamic component={props.ErrorOverlayPagination}>
-          <Dynamic
-            component={props.ErrorOverlayPrevButton}
-            onClick={goPrev}
-          />
-          <Dynamic
-            component={props.ErrorOverlayNextButton}
-            onClick={goNext}
-          />
-          <Dynamic
-            component={props.ErrorOverlayPageCounter}
-            currentCount={currentPage()}
-            maxCount={props.errors.length}
-          />
-        </Dynamic>
-        <Dynamic component={props.ErrorOverlayControls}>
-          <Dynamic
-            component={props.ErrorOverlayToggleCompiledButton}
-            onClick={toggleViewCompiled}
-            isCompiled={viewCompiled()}
-          />
-          <Dynamic
-            component={props.ErrorOverlayResetButton}
-            onClick={props.resetError}
-          />
-        </Dynamic>
-      </Dynamic>
-      <Show when={props.errors[currentPage() - 1]}>
-        {(value: unknown) => (
-          <Dynamic component={props.ErrorOverlayContent}>
-            <Dynamic
-              component={props.ErrorOverlayErrorInfo}
-              value={value}
-            />
-            {() => {
-              if (value instanceof Error) {
-                const stackFrames = ErrorStackParser.parse(value);
+  return createDynamic(() => props.ErrorOverlayContainer, {
+    get children() {
+      return [
+        createDynamic(() => props.ErrorOverlayNavbar, {
+          get children() {
+            return [
+              createDynamic(() => props.ErrorOverlayPagination, {
+                get children() {
+                  return [
+                    createDynamic(() => props.ErrorOverlayPrevButton, {
+                      onClick: goPrev,
+                    }),
+                    createDynamic(() => props.ErrorOverlayNextButton, {
+                      onClick: goNext,
+                    }),
+                    createDynamic(() => props.ErrorOverlayPageCounter, {
+                      get currentCount() {
+                        return currentPage();
+                      },
+                      get maxCount() {
+                        return props.errors.length;
+                      },
+                    }),
+                  ];
+                },
+              }),
+              createDynamic(() => props.ErrorOverlayControls, {
+                get children() {
+                  return [
+                    createDynamic(() => props.ErrorOverlayToggleCompiledButton, {
+                      onClick: toggleViewCompiled,
+                      get isCompiled() {
+                        return viewCompiled();
+                      },
+                    }),
+                    createDynamic(() => props.ErrorOverlayResetButton, {
+                      onClick: props.resetError,
+                    }),
+                  ];
+                },
+              }),
+            ];
+          },
+        }),
+        createComponent(Show, {
+          get when() {
+            return props.errors[currentPage() - 1];
+          },
+          children: (value: unknown) => (
+            createDynamic(() => props.ErrorOverlayContent, {
+              get children() {
+                return [
+                  createDynamic(() => props.ErrorOverlayErrorInfo, {
+                    value,
+                  }),
+                  () => {
+                    if (value instanceof Error) {
+                      const stackFrames = ErrorStackParser.parse(value);
 
-                return createMemo(() => (
-                  <Dynamic component={props.ErrorOverlayStackFrames}>
-                    <For each={stackFrames}>
-                      {(stackFrame) => (
-                        <StackFrame
-                          instance={stackFrame}
-                          isCompiled={viewCompiled()}
-                          ErrorOverlayCompiledStackFrame={props.ErrorOverlayCompiledStackFrame}
-                          ErrorOverlayOriginalStackFrame={props.ErrorOverlayOriginalStackFrame}
-                        />
-                      )}
-                    </For>
-                  </Dynamic>
-                ));
-              }
-              return undefined;
-            }}
-          </Dynamic>
-        )}
-      </Show>
-    </Dynamic>
-  );
+                      return createDynamic(() => props.ErrorOverlayStackFrames, {
+                        get children() {
+                          return createComponent(For, {
+                            each: stackFrames,
+                            children: (stackFrame: ErrorStackParser.StackFrame) => (
+                              createComponent(StackFrame, {
+                                instance: stackFrame,
+                                get isCompiled() {
+                                  return viewCompiled();
+                                },
+                                get ErrorOverlayCompiledStackFrame() {
+                                  return props.ErrorOverlayCompiledStackFrame;
+                                },
+                                get ErrorOverlayOriginalStackFrame() {
+                                  return props.ErrorOverlayOriginalStackFrame;
+                                },
+                              })
+                            ),
+                          });
+                        },
+                      });
+                    }
+                    return undefined;
+                  },
+                ];
+              },
+            })
+          ),
+        }),
+      ];
+    },
+  });
 }
 
 export interface ErrorOverlayProps extends ErrorOverlayComponents {
@@ -300,43 +355,48 @@ export default function ErrorOverlay(props: ErrorOverlayProps): JSX.Element {
     pushError(error);
   });
 
-  return (
-    <>
-      <ErrorBoundary
-        fallback={(err, reset) => {
-          batch(() => {
-            setFallback(true);
-            pushError(err);
-          });
-          return (
-            <ErrorOverlayInternal
-              errors={errors()}
-              resetError={() => {
-                batch(() => {
-                  resetError();
-                  reset();
-                });
-              }}
-              {...omitProps(props, [
-                'children',
-                'onError',
-              ])}
-            />
-          );
-        }}
-      >
-        {props.children}
-      </ErrorBoundary>
-      <Show when={!fallback() && errors().length}>
-        <ErrorOverlayInternal
-          errors={errors()}
-          resetError={resetError}
-          {...omitProps(props, [
-            'children',
-            'onError',
-          ])}
-        />
-      </Show>
-    </>
-  );
+  return [
+    createComponent(ErrorBoundary, {
+      fallback(err, reset) {
+        batch(() => {
+          setFallback(true);
+          pushError(err);
+        });
+
+        return createComponent(ErrorOverlayInternal, mergeProps({
+          get errors() {
+            return errors();
+          },
+          resetError() {
+            batch(() => {
+              resetError();
+              reset();
+            });
+          },
+        }, omitProps(props, [
+          'children',
+          'onError',
+        ])) as ErrorOverlayInternalProps);
+      },
+      get children() {
+        return props.children;
+      },
+    }),
+    createComponent(Show, {
+      get when() {
+        return !fallback() && errors().length;
+      },
+      get children() {
+        return createComponent(ErrorOverlayInternal, mergeProps({
+          get errors() {
+            return errors();
+          },
+          resetError,
+        }, omitProps(props, [
+          'children',
+          'onError',
+        ])) as ErrorOverlayInternalProps);
+      },
+    }),
+  ];
 }
