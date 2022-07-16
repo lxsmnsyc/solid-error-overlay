@@ -1,6 +1,7 @@
 import {
   batch,
   createComponent,
+  createComputed,
   createEffect,
   createMemo,
   createResource,
@@ -199,7 +200,7 @@ function ErrorOverlayInternal(props: ErrorOverlayInternalProps): JSX.Element {
   const [viewCompiled, setViewCompiled] = createSignal(false);
   const length = createMemo(() => props.errors.length);
 
-  createEffect((currentLength: number) => {
+  createComputed((currentLength: number) => {
     const newLength = length();
     if (currentLength < newLength) {
       setCurrentPage((current) => current + 1);
