@@ -321,7 +321,7 @@ function ErrorOverlayInternal(props: ErrorOverlayInternalProps): JSX.Element {
   });
 }
 
-export interface ErrorOverlayProps extends ErrorOverlayComponents {
+export interface ErrorOverlayProps extends Partial<ErrorOverlayComponents> {
   onError?: (error: unknown) => void;
   children?: JSX.Element;
 }
