@@ -8,7 +8,8 @@ export type ValidConstructor =
   | ValidElements
   | ValidComponent<any>
   // eslint-disable-next-line @typescript-eslint/ban-types
-  | (string & {});
+  | (string & {})
+  | undefined
 
 export type DynamicProps<T extends ValidConstructor> =
   T extends ValidElements

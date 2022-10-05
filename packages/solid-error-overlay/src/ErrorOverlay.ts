@@ -22,7 +22,7 @@ import getSourceMap from './get-source-map';
 import createDynamic from './create-dynamic';
 
 type Unbox<T> = T extends Array<infer U> ? U : never;
-type StackFrame = Unbox<ReturnType<typeof ErrorStackParser.parse>>;
+type TStackFrame = Unbox<ReturnType<typeof ErrorStackParser.parse>>;
 
 export interface ErrorOverlayContainerProps {
   children: JSX.Element;
@@ -105,10 +105,10 @@ export interface ErrorOverlayComponents {
 }
 
 interface StackFrameProps {
-  instance: StackFrame;
+  instance: TStackFrame;
   isCompiled: boolean;
-  ErrorOverlayCompiledStackFrame: Component<ErrorOverlayCompiledStackFrameProps>;
-  ErrorOverlayOriginalStackFrame: Component<ErrorOverlayOriginalStackFrameProps>;
+  ErrorOverlayCompiledStackFrame: Component<ErrorOverlayCompiledStackFrameProps> | undefined;
+  ErrorOverlayOriginalStackFrame: Component<ErrorOverlayOriginalStackFrameProps> | undefined;
 }
 
 function StackFrame(props: StackFrameProps): JSX.Element {
@@ -190,7 +190,7 @@ function StackFrame(props: StackFrameProps): JSX.Element {
   });
 }
 
-interface ErrorOverlayInternalProps extends ErrorOverlayComponents {
+interface ErrorOverlayInternalProps extends Partial<ErrorOverlayComponents> {
   errors: unknown[];
   resetError: () => void;
 }
@@ -377,7 +377,7 @@ export default function ErrorOverlay(props: ErrorOverlayProps): JSX.Element {
         }, omitProps(props, [
           'children',
           'onError',
-        ])) as ErrorOverlayInternalProps);
+        ])));
       },
       get children() {
         return props.children;
