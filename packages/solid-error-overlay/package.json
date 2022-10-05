@@ -40,7 +40,6 @@
   },
   "dependencies": {
     "error-stack-parser": "^2.1.4",
-    "solid-use": "^0.5.0",
     "source-map-js": "^1.0.2"
   },
   "private": false,
@@ -57,6 +56,9 @@
     "access": "public"
   },
   "author": "Alexis Munsayac",
+  "contributors": [
+    "Damian Tarnawski <gthetarnav@gmail.com>"
+  ],
   "scripts": {
     "prepublishOnly": "pridepack clean && pridepack build",
     "build": "pridepack build",
