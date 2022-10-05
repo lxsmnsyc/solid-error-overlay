@@ -396,7 +396,7 @@ export default function ErrorOverlay(props: ErrorOverlayProps): JSX.Element {
         }, omitProps(props, [
           'children',
           'onError',
-        ])) as ErrorOverlayInternalProps);
+        ])));
       },
     }),
   ];
