@@ -17,16 +17,13 @@ import {
   useContext,
   untrack,
   ParentComponent,
+  Component,
 } from 'solid-js';
 import * as ErrorStackParser from 'error-stack-parser';
 import getSourceMap from './get-source-map';
 
 type Unbox<T> = T extends Array<infer U> ? U : never
 type StackFrame = Unbox<ReturnType<typeof ErrorStackParser.parse>>
-
-export type RenderComponent<T> = (props: {
-  children: (passedProps: T) => JSX.Element
- }) => JSX.Element
 
 export type ErrorOverlayRenderProps = {
   error: unknown
@@ -123,7 +120,14 @@ const ErrorOverlayContext = createContext<{
 const useErrorOverlayContext = (name: string) => {
   const ctx = useContext(ErrorOverlayContext);
   if (!ctx) {
-    throw new Error(`<${name}> must be used under <ErrorOverlay>`);
+    if (process.env.NODE_ENV !== 'production') {
+      const message = `<${name}> must be used within <ErrorOverlay> render prop`;
+      // eslint-disable-next-line no-console
+      console.warn(message);
+      throw new Error(message);
+    } else {
+      throw new Error();
+    }
   }
   return ctx;
 };
@@ -149,12 +153,21 @@ export const ErrorOverlayStackFramesContent: ParentComponent = (props) => {
   });
 };
 
-export const ErrorOverlayStackFrames: RenderComponent<StackFrameState> = (props) => {
+export const ErrorOverlayStackFrames: Component<{
+  children: (passedProps: StackFrameState) => JSX.Element
+}> = (props) => {
   const ctx = useErrorOverlayContext('ErrorOverlayStackFrames');
   const stackFramesCtx = useContext(StackFramesContext);
 
   if (!stackFramesCtx) {
-    throw new Error('<ErrorOverlayStackFrames> must be used under <ErrorOverlayStackFramesContent>');
+    if (process.env.NODE_ENV !== 'production') {
+      const message = '<ErrorOverlayStackFrames> must be used under <ErrorOverlayStackFramesContent>';
+      // eslint-disable-next-line no-console
+      console.warn(message);
+      throw new Error(message);
+    } else {
+      throw new Error();
+    }
   }
 
   return For({
