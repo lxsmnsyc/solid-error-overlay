@@ -120,7 +120,7 @@ const ErrorOverlayContext = createContext<{
 const useErrorOverlayContext = (name: string) => {
   const ctx = useContext(ErrorOverlayContext);
   if (!ctx) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV === 'development') {
       const message = `<${name}> must be used within <ErrorOverlay> render prop`;
       // eslint-disable-next-line no-console
       console.warn(message);
@@ -160,7 +160,7 @@ export const ErrorOverlayStackFrames: Component<{
   const stackFramesCtx = useContext(StackFramesContext);
 
   if (!stackFramesCtx) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV === 'development') {
       const message = '<ErrorOverlayStackFrames> must be used under <ErrorOverlayStackFramesContent>';
       // eslint-disable-next-line no-console
       console.warn(message);
